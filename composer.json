@@ -10,5 +10,10 @@
             "name": "Chris Hutchinson",
             "email": "chris.hutchinson@thetimes.co.uk"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "Times\\": "src"
+        }
+    },
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace Times;
+
 class EsriFeatureService {
 
 	protected $featureService;
