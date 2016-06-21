@@ -20,7 +20,6 @@ Then add this to your `dependencies`:
 ### Usage
 
 	require './vendor/autoload.php';
-	require './EsriFeatureService.php';
 
 	$featureServer = '';
 	$sourceJson = '';
