@@ -3,9 +3,18 @@
 
 ### Installation
 
-Install via `composer`:
+Install via `composer`. Add the following to your `composer.json` file:
 
-`$ composer require times/esri-feature-service`
+	"repositories": [
+	    {
+	        "type": "vcs",
+	        "url":  "git@github.com:times/EsriFeatureService.git"
+	    }
+	],
+
+Then add this to your `dependencies`:
+
+	"times/esri-feature-service": "dev-master"
 
 
 ### Usage
