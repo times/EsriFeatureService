@@ -1,0 +1,14 @@
+{
+    "name": "times/esri-feature-service",
+    "description": "A helper class for using ESRI Feature Services",
+    "require": {
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chris Hutchinson",
+            "email": "chris.hutchinson@thetimes.co.uk"
+        }
+    ]
+}
