@@ -1,31 +1,25 @@
 # ESRI Feature Service Class
 
+A PHP class for interfacing with [ESRI's feature service API](http://resources.arcgis.com/en/help/rest/apiref/featureserver.html).
+
 
 ### Installation
 
-Install via `composer`. Add the following to your `composer.json` file:
+Install via `composer`.
 
-	"repositories": [
-	    {
-	        "type": "vcs",
-	        "url":  "git@github.com:times/EsriFeatureService.git"
-	    }
-	],
+	$ composer require times/esri-feature-service
 
-Then add this to your `dependencies`:
-
-	"times/esri-feature-service": "dev-master"
 
 
 ### Usage
-
+	
 	require './vendor/autoload.php';
 
-	$featureServer = '';
-	$sourceJson = '';
-	$token = ''; // Or array containing `username` and `password`
+	$featureService = ''; // URL to the feature service
+	$sourceJson = ''; // URL to your JSON file containing an array of data
+	$token = ''; // A string containing the token, or an array containing `username` and `password`
 
-	// Define our mapper class
+	// Define our mapper class. The `EsriFeatureService` class calls the `map()` method below to map the loaded in data into the format defined in this method (to match the needs of your ESRI map)
 	class CustomMapper {
 
 		public function map($record) {
@@ -40,11 +34,10 @@ Then add this to your `dependencies`:
 	$CustomMapper = new CustomMapper;
 
 	// Initialise the EsriFeatureService and pass in the mapper
-	$FeatureService = new EsriFeatureService($featureServer, $sourceJson, $token, $CustomMapper);
+	$FeatureService = new EsriFeatureService($featureService, $sourceJson, $token, $CustomMapper);
 
 	// Trigger the data update
 	$response = $FeatureService->update();
 
 	// Dump the response (an array of successes, failures and errors)
 	var_dump($response);
-	die();
