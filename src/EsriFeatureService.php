@@ -112,7 +112,10 @@ class EsriFeatureService {
 	 */
 	private function getFeatures() {
 		// Setup the URL
-		$url = $this->featureService . '/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=&units=esriSRUnit_Meter&outFields=pa_name%2C+objectid&returnGeometry=false&returnCentroid=false&multipatchOption=&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&quantizationParameters=&f=json&token=' . $this->auth;
+		/*$url = $this->featureService . '/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=&units=esriSRUnit_Meter&outFields=pa_name%2C+objectid&returnGeometry=false&returnCentroid=false&multipatchOption=&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&quantizationParameters=&f=json&token=' . $this->auth;*/
+
+		// removed &multipatchOption=
+		$url = $this->featureService . '/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=&units=esriSRUnit_Meter&outFields=PA_ID%2C+objectid&returnGeometry=false&returnCentroid=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnDistinctValues=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&quantizationParameters=&f=json&token=' . $this->auth;
 
 		try {
 			$res = $this->client->get($url);
@@ -121,7 +124,7 @@ class EsriFeatureService {
 			$featuresArray = array();
 
 			foreach($features as $key => $feature) {
-				$featuresArray[$feature->attributes->pa_name] = $feature->attributes->OBJECTID;
+				$featuresArray[$feature->attributes->PA_ID] = $feature->attributes->OBJECTID;
 			}
 
 			return $featuresArray;
@@ -151,7 +154,14 @@ class EsriFeatureService {
 			)
 		);
 
-		$data[0]['attributes'] = array_merge($data[0]['attributes'], $this->mapper->map($record));
+		// single record
+		foreach ($record as $key => $value) {
+			$data[0]['attributes'][$key] = $value;
+		}
+
+		// mulitple records
+		//$data[0]['attributes'] = array_merge($data[0]['attributes'], $this->mapper->map($record));
+
 
 		try {
 			$res = $this->client->request('POST', $url, array(
@@ -191,7 +201,23 @@ class EsriFeatureService {
 		$failures = [];
 		$errors = [];
 
-		foreach($results as $key => $result) {
+		// single record
+		if(!isset($features[$results->PA_ID])) {
+			$failures[] = $results->PA_ID;
+		}
+
+		$res = $this->updateFeature($features[$results->PA_ID], $results);
+
+		if(isset($res->error)) {
+			$errors[] = $results->PA_ID;
+		}
+
+		if($res) {
+			$sent[] = $results->PA_ID;
+		}
+
+		// mulitple records
+		/*foreach($results as $key => $result) {
 			if(!isset($features[$result->name])) {
 				$failures[] = $result->name;
 				continue;
@@ -207,7 +233,7 @@ class EsriFeatureService {
 			if($res) {
 				$sent[] = $result->name;
 			}
-		}
+		}*/
 
 		return array(
 			'sent' => $sent,
@@ -215,5 +241,4 @@ class EsriFeatureService {
 			'errors' => $errors
 		);
 	}
-
 }
